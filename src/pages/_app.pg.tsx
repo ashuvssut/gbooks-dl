@@ -1,20 +1,42 @@
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
+import React, { useRef } from "react";
+import Head from "next/head";
+import { Header } from "../components/Header";
+import { useRouter } from "next/router";
 
 import { api } from "../utils/api";
 
 import "../styles/globals.css";
 
-const MyApp: AppType<{ session: Session | null }> = ({
+const App: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
+  const router = useRouter();
+  const showHeaderCompo = useRef(true);
+  const showFooterCompo = useRef(true);
+
+  showHeaderCompo.current = ["/register"].includes(router.route) ? false : true;
+  showFooterCompo.current = ["/register", "/404"].includes(router.route)
+    ? false
+    : true;
   return (
-    <SessionProvider session={session}>
-      <Component {...pageProps} />
-    </SessionProvider>
+    <React.Fragment>
+      <Head>
+        <meta
+          name="viewport"
+          content="minimum-scale=1, initial-scale=1, width=device-width"
+        />
+      </Head>
+      <SessionProvider session={session}>
+        {showHeaderCompo.current && <Header />}
+        <Component {...pageProps} />
+        {/* {showFooterCompo.current && <Footer />} */}
+      </SessionProvider>
+    </React.Fragment>
   );
 };
 
-export default api.withTRPC(MyApp);
+export default api.withTRPC(App);
