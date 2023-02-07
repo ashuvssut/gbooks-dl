@@ -20,5 +20,7 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+
+  pageExtensions: ["pg.tsx", "pg.ts"], // Ref: https://nextjs.org/docs/api-reference/next.config.js/
 };
 export default config;
