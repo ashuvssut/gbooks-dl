@@ -5,10 +5,10 @@ import React, { useRef } from "react";
 import Head from "next/head";
 import { Header } from "../components/Header";
 import { useRouter } from "next/router";
-
 import { api } from "../utils/api";
 
 import "../styles/globals.css";
+import { AppThemeProvider } from "../theme";
 
 const App: AppType<{ session: Session | null }> = ({
   Component,
@@ -31,9 +31,11 @@ const App: AppType<{ session: Session | null }> = ({
         />
       </Head>
       <SessionProvider session={session}>
-        {showHeaderCompo.current && <Header />}
-        <Component {...pageProps} />
-        {/* {showFooterCompo.current && <Footer />} */}
+        <AppThemeProvider>
+          {showHeaderCompo.current && <Header />}
+          <Component {...pageProps} />
+          {/* {showFooterCompo.current && <Footer />} */}
+        </AppThemeProvider>
       </SessionProvider>
     </React.Fragment>
   );
