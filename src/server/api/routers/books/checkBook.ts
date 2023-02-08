@@ -1,25 +1,7 @@
-import { TRPCError } from "@trpc/server";
-import axios from "axios";
 import { TPage } from ".";
 import { getMissingPages, getPid } from "./utils";
 
-export const checkBook = async (bookId: string) => {
-  const url =
-    "https://books.google.com.sg/books?id=" +
-    bookId +
-    "&lpg=PR1&pg=PA2&source=entity_page&jscmd=click3";
-  const response = await axios.get(url);
-
-  if (response.status !== 200)
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message:
-        "Error! Either the Book is not available or the Book ID is incorrect.",
-      cause: response.statusText,
-    });
-
-  const { page: pages }: { page: TPage[] } = response.data;
-
+export const checkBook = async (pages: TPage[]) => {
   const [allPrefaceIds, allPageIds] = pages.reduce(
     (acc, curr) => {
       if (curr.pid.startsWith("PR")) acc[0]!.push(getPid(curr.pid));
