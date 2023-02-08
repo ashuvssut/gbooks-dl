@@ -15,6 +15,7 @@ import Head from "next/head";
 import { BookChecker } from "./components/BookChecker";
 import { CheckResults } from "./components/CheckResults";
 import { FetchPages } from "./components/FetchPages";
+import { WarningMessage } from "./components/WarningMessage";
 import { checkResultsAtom } from "./store";
 
 export const Home: NextPage = () => {
@@ -32,6 +33,7 @@ export const Home: NextPage = () => {
           paddingTop: "2rem",
         }}
       >
+        <WarningMessage message='Make sure to make as less requests as possible. Else Google may start blocking the requests as "unusual traffic"' />
         <Timeline
           position="right"
           sx={{

@@ -19,7 +19,7 @@ export const CheckResults: FC = () => {
 
   if (!checkResults)
     return (
-      <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+      <Typography mt={1} color="text.secondary">
         N/A
       </Typography>
     );
