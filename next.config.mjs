@@ -22,5 +22,11 @@ const config = {
   },
 
   pageExtensions: ["pg.tsx", "pg.ts"], // Ref: https://nextjs.org/docs/api-reference/next.config.js/
+
+  modularizeImports: {
+    "@mui/icons-material": {
+      transform: "@mui/icons-material/{{member}}",
+    },
+  },
 };
 export default config;
