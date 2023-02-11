@@ -71,7 +71,7 @@ export const Home: NextPage = () => {
             </TimelineSeparator>
             <TimelineContent>
               <Typography variant="h5" component="h2">
-                Fetch Available Pages
+                Fetch Sources of the Available Pages
               </Typography>
               <FetchPages />
             </TimelineContent>

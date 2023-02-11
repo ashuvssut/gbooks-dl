@@ -17,18 +17,19 @@ import React, { FC, useState } from "react";
 import { api } from "../../../utils/api";
 import { bookIdAtom, checkResultsAtom } from "../store";
 
-type TPageQuality = "High" | "Medium";
+type TPageQuality = "High" | "Medium" | "Low";
 export const FetchPages: FC = () => {
   const [bookSummary, _] = useAtom(checkResultsAtom);
   const [bookId, __] = useAtom(bookIdAtom);
   const [pageQuality, setPageQuality] = useState<TPageQuality>("High");
-  const [addPlaceholderPages, setAddPlaceholderPages] = useState(true);
+  const [tld, setTld] = useState("com.sg");
+  const [usePlaceholder, setUsePlaceholder] = useState(true); // use blank placeholder pages for missing pages
 
   const { data, refetch, isFetching, error, isError } =
     api.books.fetchAvailablePages.useQuery(
       // @ts-ignore: bookSummary is not null. But zod will reject request when its null.
       // TODO: fix bookSummary type to not be null
-      { bookId, bookSummary, pageQuality, usePlaceholder: addPlaceholderPages },
+      { bookId, bookSummary, pageQuality, usePlaceholder, tld, pageType: "PR" },
       { enabled: false }
     );
 
@@ -39,6 +40,7 @@ export const FetchPages: FC = () => {
       </Typography>
     );
 
+  const tlds = ["com.sg", "com", "co.in", "de"];
   return (
     <Box>
       <Card sx={{ minWidth: 275 }}>
@@ -51,18 +53,37 @@ export const FetchPages: FC = () => {
               value={pageQuality}
               label="Page Quality"
               onChange={(e) => setPageQuality(e.target.value as TPageQuality)}
-              sx={{ width: 150 }}
+              sx={{ width: 200 }}
               required
             >
               <MenuItem value="High">High</MenuItem>
               <MenuItem value="Medium">Medium</MenuItem>
+              <MenuItem value="Low">Low</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl sx={{ display: "block", mt: 1 }}>
+            <InputLabel id="tld-label">TLD of page image URLs</InputLabel>
+            <Select
+              labelId="tld-label"
+              id="tld"
+              value={tld}
+              label="TLD of page image URLs"
+              onChange={(e) => setTld(e.target.value)}
+              sx={{ width: 200 }}
+              required
+            >
+              {tlds.map((tld) => (
+                <MenuItem value={tld} key={tld}>
+                  .{tld}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
           <FormControlLabel
             control={
               <Checkbox
-                checked={addPlaceholderPages}
-                onChange={(e) => setAddPlaceholderPages(e.target.checked)}
+                checked={usePlaceholder}
+                onChange={(e) => setUsePlaceholder(e.target.checked)}
               />
             }
             label="Use blank pages for missing pages"
