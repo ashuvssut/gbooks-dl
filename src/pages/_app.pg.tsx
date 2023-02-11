@@ -6,7 +6,7 @@ import Head from "next/head";
 import { Header } from "../components/Header";
 import { useRouter } from "next/router";
 import { api } from "../utils/api";
-
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "../styles/globals.css";
 import { AppThemeProvider } from "../theme";
 
@@ -30,6 +30,9 @@ const App: AppType<{ session: Session | null }> = ({
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
       </Head>
+      {process.env.NODE_ENV !== "production" && (
+        <ReactQueryDevtools initialIsOpen={false} />
+      )}
       <SessionProvider session={session}>
         <AppThemeProvider>
           {showHeaderCompo.current && <Header />}
