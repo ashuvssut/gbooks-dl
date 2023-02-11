@@ -7,7 +7,7 @@ export type TPage = {
 };
 export async function getPageSources(input: TFetchAvailPagesInput) {
   const { bookId, bookSummary, pageQual, tld, pageType } = input;
-
+  console.log("fetching page sources", JSON.stringify(input, null, 2));
   const { missingFrontPgs, missingBodyPgs, totalFrontPgs, totalBodyPgs } =
     bookSummary;
 
@@ -29,13 +29,16 @@ export async function getPageSources(input: TFetchAvailPagesInput) {
   let previousAvailablePagesLength = availablePages.length;
   let fetchRepeatCount = 0;
   let tryIndex = 0; // TODO: randomize tryIndex instead of 0
+  let loopCount = 0;
   while (availablePages.length !== 0) {
+    loopCount++;
+    console.log("loop count " + loopCount, availablePages);
     if (tryIndex >= availablePages.length) tryIndex = 0;
 
     if (previousAvailablePagesLength === availablePages.length) {
       fetchRepeatCount++;
-      if (fetchRepeatCount > 5) {
-        console.log("fetchRepeatCount > 5");
+      if (fetchRepeatCount > 2) {
+        console.warn("fetchRepeatCount > 2");
         break;
       }
     } else fetchRepeatCount = 0;
@@ -60,7 +63,7 @@ export async function getPageSources(input: TFetchAvailPagesInput) {
         const pidNumber = parseInt(page.pid.replace(pageType, ""));
         const index = availablePages.indexOf(pidNumber);
         if (index > -1) availablePages.splice(index, 1);
-        previousAvailablePagesLength--;
+        previousAvailablePagesLength = availablePages.length;
       } else break;
     }
   }

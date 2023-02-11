@@ -125,15 +125,18 @@ const FetchAccordion: FC<IFetchAccordion> = (props) => {
               Download JSON
             </Button>
           </Box>
-
-          {d && (
-            <Typography variant="overline" color="text.secondary">
-              {Object.keys(d.pageLinks).length} Page image links fetched
-            </Typography>
-          )}
+          <Box display="flex" alignItems="center" gap={1}>
+            {isError ? (
+              <FormHelperText error>Error: {error?.message}</FormHelperText>
+            ) : null}
+            {d && (
+              <Typography variant="overline" color="text.secondary">
+                {Object.keys(d.pageLinks).length} Page image links fetched
+              </Typography>
+            )}
+          </Box>
         </Box>
       </AccordionSummary>
-      {isError ? <FormHelperText error>{error?.message}</FormHelperText> : null}
       {d && d.failedPages.length !== 0 && (
         <AccordionDetails>
           <Box display="flex" alignItems="center" gap={1}>

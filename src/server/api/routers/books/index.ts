@@ -32,7 +32,7 @@ export const booksRouter = createTRPCRouter({
 
         // TODO: detect when Google Books is blocking the request and ask user to change network with FORBIDDEN
         if (axios.isAxiosError(errors)) {
-          console.log(errors.status);
+          console.warn(errors.status);
           throw new TRPCError({
             code: "BAD_REQUEST",
             cause: error,
@@ -55,7 +55,7 @@ export const booksRouter = createTRPCRouter({
       } catch (error: unknown) {
         const errors = error as Error | AxiosError;
         if (axios.isAxiosError(errors)) {
-          console.log(errors.status);
+          console.warn(errors.status);
           throw new TRPCError({
             code: "BAD_REQUEST",
             cause: error,
