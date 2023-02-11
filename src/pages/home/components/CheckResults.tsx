@@ -11,19 +11,14 @@ import {
 } from "@mui/material";
 import { useAtom } from "jotai";
 import React, { FC } from "react";
-import { bookIdAtom, checkResultsAtom } from "../store";
+import { NotAvailable } from "../../../components/NotAvailable";
+import { bookIdAtom, bookSummaryAtom } from "../store";
 
 export const CheckResults: FC = () => {
-  const [checkResults, _] = useAtom(checkResultsAtom);
+  const [checkResults, _] = useAtom(bookSummaryAtom);
   const [bookId, __] = useAtom(bookIdAtom);
 
-  if (!checkResults)
-    return (
-      <Typography mt={1} color="text.secondary">
-        N/A
-      </Typography>
-    );
-
+  if (!checkResults) return <NotAvailable />;
   const { totalPages, totalPrefaces, missingPages, missingPrefaces } =
     checkResults;
   const availablePages = totalPages - missingPages.length;

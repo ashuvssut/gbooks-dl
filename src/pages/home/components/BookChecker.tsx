@@ -2,7 +2,7 @@ import { useAtom } from "jotai";
 import { FC, useEffect } from "react";
 import { FormEvent, useRef, useState } from "react";
 import { api } from "../../../utils/api";
-import { bookIdAtom, checkResultsAtom } from "../store";
+import { bookIdAtom, bookSummaryAtom } from "../store";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Button,
@@ -23,7 +23,7 @@ export const BookChecker: FC = ({}) => {
     setBookId(inputValue);
     refetch();
   };
-  const [_, setCheckResults] = useAtom(checkResultsAtom);
+  const [_, setCheckResults] = useAtom(bookSummaryAtom);
   useEffect(() => {
     if (data) setCheckResults(data);
     else setCheckResults(null);

@@ -1,6 +1,6 @@
 import { atom } from "jotai";
-import { TCheckResults } from "../../server/api/routers/books";
+import { TBookCheckSummary } from "../../server/api/routers/books";
 
 export const bookIdAtom = atom("bERxDwAAQBAJ");
 
-export const checkResultsAtom = atom<TCheckResults | null>(null);
+export const bookSummaryAtom = atom<TBookCheckSummary | null>(null);

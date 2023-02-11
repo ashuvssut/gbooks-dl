@@ -1,4 +1,4 @@
-import { inferRouterInputs, inferRouterOutputs, TRPCError } from "@trpc/server";
+import { inferRouterOutputs, TRPCError } from "@trpc/server";
 import axios, { AxiosError } from "axios";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../../trpc";
@@ -13,11 +13,7 @@ const fetchAvailablePagesSchema = z.object({
     totalPrefaces: z.number(),
     totalPages: z.number(),
   }),
-  pageQuality: z.union([
-    z.literal("High"),
-    z.literal("Medium"),
-    z.literal("Low"),
-  ]),
+  pageQual: z.union([z.literal("High"), z.literal("Medium"), z.literal("Low")]),
   usePlaceholder: z.boolean(),
   tld: z.string(),
   pageType: z.union([z.literal("PR"), z.literal("PA")]),
@@ -79,4 +75,4 @@ export const booksRouter = createTRPCRouter({
 });
 
 type TRouterOutput = inferRouterOutputs<typeof booksRouter>;
-export type TCheckResults = TRouterOutput["checkBook"];
+export type TBookCheckSummary = TRouterOutput["checkBook"];

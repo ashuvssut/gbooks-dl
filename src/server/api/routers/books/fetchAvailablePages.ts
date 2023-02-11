@@ -6,8 +6,7 @@ export type TPage = {
   src?: string;
 };
 export async function getPageSources(input: TFetchAvailPagesInput) {
-  const { bookId, bookSummary, pageQuality, usePlaceholder, tld, pageType } =
-    input;
+  const { bookId, bookSummary, pageQual, tld, pageType } = input;
 
   const { missingPrefaces, missingPages, totalPrefaces, totalPages } =
     bookSummary;
@@ -15,11 +14,7 @@ export async function getPageSources(input: TFetchAvailPagesInput) {
   const totalTypePages = pageType === "PR" ? totalPrefaces : totalPages;
 
   const widthParam =
-    pageQuality === "High"
-      ? "&w=4208"
-      : pageQuality === "Medium"
-      ? "&w=1280"
-      : "";
+    pageQual === "High" ? "&w=4208" : pageQual === "Medium" ? "&w=1280" : "";
 
   const pageSrcURL = (pid: string, sig: string) =>
     `https://books.google.${tld}/books/publisher/content?id=${bookId}&pg=${pid}&sig=${sig}${widthParam}&img=1&zoom=3`;
