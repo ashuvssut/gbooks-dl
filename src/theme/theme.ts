@@ -57,7 +57,7 @@ export function getThemedComponents(theme: Theme): {
             }),
             ...(ownerState.variant === "contained" &&
               ownerState.color === "primary" && {
-                backgroundColor: "#67B3FF",
+                backgroundColor: "#1a85ef",
                 color: "#fff",
               }),
           }),

@@ -1,12 +1,12 @@
-import * as React from "react";
 import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
 import IconButton from "@mui/material/IconButton";
 import Collapse from "@mui/material/Collapse";
 import CloseIcon from "@mui/icons-material/Close";
+import { useState } from "react";
 
 export function WarningMessage({ message }: { message: string }) {
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
 
   return (
     <Box sx={{ width: "100%" }}>

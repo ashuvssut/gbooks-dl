@@ -77,9 +77,9 @@ const PageTypeSummary: FC<IPageTypeSummary> = ({
   return (
     <Accordion disableGutters>
       <AccordionSummary
-        expandIcon={<ExpandMore />}
-        aria-controls="panel2a-content"
-        id="panel2a-header"
+        expandIcon={missingPages.length !== 0 ? <ExpandMore /> : undefined}
+        aria-controls="check-results-content"
+        id="check-results-header"
       >
         <Box
           display="flex"

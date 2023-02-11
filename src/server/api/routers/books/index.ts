@@ -51,7 +51,6 @@ export const booksRouter = createTRPCRouter({
     .query(async ({ input }) => {
       try {
         const { pageLinks, failedPages } = await getPageSources(input);
-
         return { pageLinks, failedPages };
       } catch (error: unknown) {
         const errors = error as Error | AxiosError;

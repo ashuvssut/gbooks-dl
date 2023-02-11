@@ -32,7 +32,6 @@ export const PageFetcherSettings: FC = () => {
     tld: "com.sg",
     usePlaceholder: true, // use blank placeholder pages for missing pages
   });
-  const [showFetcher, setShowFetcher] = useState(false);
 
   if (!bookSummary) return <NotAvailable />;
   return (
@@ -94,15 +93,9 @@ export const PageFetcherSettings: FC = () => {
             label="Use blank pages for missing pages"
           />
         </CardContent>
-        <CardActions>
-          <Button size="small" onClick={() => setShowFetcher(true)}>
-            Start Fetching
-          </Button>
-        </CardActions>
       </Card>
-      {showFetcher && (
-        <PageSrcsFetcher settings={settings} bookSummary={bookSummary} />
-      )}
+
+      <PageSrcsFetcher settings={settings} bookSummary={bookSummary} />
     </Box>
   );
 };
