@@ -6,7 +6,8 @@ import Button from "@mui/material/Button";
 import { signIn, signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import { FC } from "react";
-import { Stack } from "@mui/material";
+import { Avatar, Stack, Tooltip } from "@mui/material";
+import { Session } from "next-auth";
 
 export const Header: FC = () => {
   return (
@@ -33,9 +34,7 @@ export const AuthShowcase: React.FC = () => {
   const { data: sessionData } = useSession();
   return (
     <Stack direction="row" alignItems="center">
-      <Typography variant="body1" mx={1}>
-        {sessionData && <span>{sessionData.user?.name}</span>}
-      </Typography>
+      {sessionData ? <UserAvatar user={sessionData.user} /> : null}
       <Button
         variant="contained"
         onClick={sessionData ? () => void signOut() : () => void signIn()}
@@ -43,5 +42,14 @@ export const AuthShowcase: React.FC = () => {
         {sessionData ? "Sign out" : "Sign in"}
       </Button>
     </Stack>
+  );
+};
+
+export const UserAvatar: FC<{ user: Session["user"] }> = ({ user }) => {
+  const src = user?.image || undefined;
+  return (
+    <Tooltip title={user?.name || ""}>
+      <Avatar alt={user?.name || ""} src={src} sx={{ mr: 1 }} />
+    </Tooltip>
   );
 };
