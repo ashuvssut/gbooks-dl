@@ -8,10 +8,11 @@ export type TPage = {
 export async function getPageSources(input: TFetchAvailPagesInput) {
   const { bookId, bookSummary, pageQual, tld, pageType } = input;
 
-  const { missingPrefaces, missingPages, totalPrefaces, totalPages } =
+  const { missingFrontPgs, missingBodyPgs, totalFrontPgs, totalBodyPgs } =
     bookSummary;
-  const missingTypePages = pageType === "PR" ? missingPrefaces : missingPages;
-  const totalTypePages = pageType === "PR" ? totalPrefaces : totalPages;
+
+  const missingTypePages = pageType === "PR" ? missingFrontPgs : missingBodyPgs;
+  const totalTypePages = pageType === "PR" ? totalFrontPgs : totalBodyPgs;
 
   const widthParam =
     pageQual === "High" ? "&w=4208" : pageQual === "Medium" ? "&w=1280" : "";

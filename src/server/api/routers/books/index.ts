@@ -8,10 +8,10 @@ import { getPageSources } from "./fetchAvailablePages";
 const fetchAvailablePagesSchema = z.object({
   bookId: z.string(),
   bookSummary: z.object({
-    missingPrefaces: z.array(z.number()),
-    missingPages: z.array(z.number()),
-    totalPrefaces: z.number(),
-    totalPages: z.number(),
+    missingFrontPgs: z.array(z.number()),
+    missingBodyPgs: z.array(z.number()),
+    totalFrontPgs: z.number(),
+    totalBodyPgs: z.number(),
   }),
   pageQual: z.union([z.literal("High"), z.literal("Medium"), z.literal("Low")]),
   usePlaceholder: z.boolean(),
@@ -24,10 +24,7 @@ export const booksRouter = createTRPCRouter({
     .input(z.object({ bookId: z.string() }))
     .query(async ({ input }) => {
       try {
-        const url =
-          "https://books.google.com.sg/books?id=" +
-          input.bookId +
-          "&lpg=PR1&pg=PA294&source=entity_page&jscmd=click3";
+        const url = `https://books.google.com.sg/books?jscmd=click3&id=${input.bookId}&pg=PR1`;
         const response = await axios.get(url);
         return await checkBook(response.data.page);
       } catch (error: unknown) {

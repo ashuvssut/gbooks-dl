@@ -1,8 +1,8 @@
-import { TPage } from ".";
+import { TPage } from "./fetchAvailablePages";
 import { getMissingPages, getPid } from "./utils";
 
 export const checkBook = async (pages: TPage[]) => {
-  const [allPrefaceIds, allPageIds] = pages.reduce(
+  const [allFrontPgsIds, allBodyPgsIds] = pages.reduce(
     (acc, curr) => {
       if (curr.pid.startsWith("PR")) acc[0]!.push(getPid(curr.pid));
       else if (curr.pid.startsWith("PA")) acc[1]!.push(getPid(curr.pid));
@@ -12,20 +12,20 @@ export const checkBook = async (pages: TPage[]) => {
   );
 
   // remove duplicates and find missing pages
-  const prefaceIds = [...new Set(allPrefaceIds)] as number[];
-  const prfcMax = Math.max(...prefaceIds);
-  const prfcMin = Math.min(...prefaceIds);
-  const missingPrefaces = getMissingPages(prefaceIds, prfcMin, prfcMax);
+  const frontPgsIds = [...new Set(allFrontPgsIds)] as number[];
+  const frPgMax = Math.max(...frontPgsIds);
+  const frPgMin = Math.min(...frontPgsIds);
+  const missingFrontPgs = getMissingPages(frontPgsIds, frPgMin, frPgMax);
 
-  const pageIds = [...new Set(allPageIds)] as number[];
-  const pageMax = Math.max(...pageIds);
-  const pageMin = Math.min(...pageIds);
-  const missingPages = getMissingPages(pageIds, pageMin, pageMax);
+  const bodyPgsIds = [...new Set(allBodyPgsIds)] as number[];
+  const bodyPgMax = Math.max(...bodyPgsIds);
+  const bodyPgMin = Math.min(...bodyPgsIds);
+  const missingBodyPgs = getMissingPages(bodyPgsIds, bodyPgMin, bodyPgMax);
 
   return {
-    missingPrefaces,
-    missingPages,
-    totalPrefaces: prfcMax,
-    totalPages: pageMax,
+    missingFrontPgs,
+    missingBodyPgs,
+    totalFrontPgs: frPgMax,
+    totalBodyPgs: bodyPgMax,
   };
 };

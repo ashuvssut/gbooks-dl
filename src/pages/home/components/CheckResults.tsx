@@ -19,11 +19,11 @@ export const CheckResults: FC = () => {
   const [bookId, __] = useAtom(bookIdAtom);
 
   if (!checkResults) return <NotAvailable />;
-  const { totalPages, totalPrefaces, missingPages, missingPrefaces } =
+  const { totalBodyPgs, totalFrontPgs, missingBodyPgs, missingFrontPgs } =
     checkResults;
-  const availablePages = totalPages - missingPages.length;
-  const availablePrefaces = totalPrefaces - missingPrefaces.length;
-  const availableBookPages = availablePages + availablePrefaces;
+  const availableBodyPgsCnt = totalBodyPgs - missingBodyPgs.length;
+  const availableFrontPgsCnt = totalFrontPgs - missingFrontPgs.length;
+  const availableBookPages = availableBodyPgsCnt + availableFrontPgsCnt;
   return (
     <Box>
       <Card sx={{ minWidth: 275 }}>
@@ -33,28 +33,28 @@ export const CheckResults: FC = () => {
           </Typography>
           <Typography variant="h4">Book ID: {bookId}</Typography>
           <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            Total Pages: {totalPages + totalPrefaces}
+            Total Pages: {totalBodyPgs + totalFrontPgs}
           </Typography>
 
           <Typography variant="h5">Summary</Typography>
           <Typography variant="subtitle1">
-            {availableBookPages} out of {totalPages + totalPrefaces} pages are
+            {availableBookPages} out of {totalBodyPgs + totalFrontPgs} pages are
             available.
             {availableBookPages !== 0 &&
               " Others might need manual downloading using a VPN"}
           </Typography>
 
           <PageTypeSummary
-            type="Preface"
-            availablePages={availablePrefaces}
-            totalPages={totalPrefaces}
-            missingPages={missingPrefaces}
+            type="Front Matter"
+            availablePages={availableFrontPgsCnt}
+            totalPages={totalFrontPgs}
+            missingPages={missingFrontPgs}
           />
           <PageTypeSummary
-            type="Content"
-            availablePages={availablePages}
-            totalPages={totalPages}
-            missingPages={missingPages}
+            type="Body"
+            availablePages={availableBodyPgsCnt}
+            totalPages={totalBodyPgs}
+            missingPages={missingBodyPgs}
           />
         </CardContent>
       </Card>
