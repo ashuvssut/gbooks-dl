@@ -20,53 +20,62 @@ export async function getPageSources(input: TFetchAvailPagesInput) {
   const pageSrcURL = (pid: string, sig: string) =>
     `https://books.google.${tld}/books/publisher/content?id=${bookId}&pg=${pid}&sig=${sig}${widthParam}&img=1&zoom=3`;
 
-  const availablePages: number[] = [];
-  for (let i = 1; i <= totalTypePages; i++)
-    if (!missingTypePages.includes(i)) availablePages.push(i);
+  const getJsonURL = (page: number) =>
+    `https://books.google.${tld}/books?jscmd=click3&id=${bookId}&pg=${pageType}${page}`;
 
-  const pageLinks: Record<string, string> = {};
+    async function getPageLinks() {
+      const availablePages: number[] = [];
+      for (let i = 1; i <= totalTypePages; i++)
+      if (!missingTypePages.includes(i)) availablePages.push(i);
+      const getRandomIdx = () => Math.floor(Math.random() * availablePages.length);
 
-  let previousAvailablePagesLength = availablePages.length;
-  let fetchRepeatCount = 0;
-  let tryIndex = 0; // TODO: randomize tryIndex instead of 0
-  let loopCount = 0;
-  while (availablePages.length !== 0) {
-    loopCount++;
-    console.log("loop count " + loopCount, availablePages);
-    if (tryIndex >= availablePages.length) tryIndex = 0;
+    const pageLinks: Record<string, string> = {};
+    let previousAvailablePagesLength = availablePages.length;
+    let fetchRepeatCount = 0;
+    let tryIndex = getRandomIdx();
+    let loopCount = 0;
+    while (availablePages.length !== 0) {
+      loopCount++;
+      console.log("loop count " + loopCount, availablePages);
 
-    if (previousAvailablePagesLength === availablePages.length) {
-      fetchRepeatCount++;
-      if (fetchRepeatCount > 5) {
-        console.warn("fetchRepeatCount > 5");
-        break;
-      }
-    } else fetchRepeatCount = 0;
+      tryIndex = getRandomIdx();
+      console.log("tryIndex", tryIndex);
 
-    const jsonURL = `https://books.google.${tld}/books?jscmd=click3&id=${bookId}&pg=${pageType}${availablePages[tryIndex]}`;
-    const response = await axios.get(jsonURL);
-    const pages: TPage[] = response.data.page;
+      if (previousAvailablePagesLength === availablePages.length) {
+        fetchRepeatCount++;
+        if (fetchRepeatCount > 30) {
+          console.warn("fetchRepeatCount limit exceeded");
+          break;
+        }
+      } else fetchRepeatCount = 0;
 
-    for (let i = 0; i < pages.length; i++) {
-      const page = pages[i]!;
+      const jsonURL = getJsonURL(availablePages[tryIndex]!);
+      const response = await axios.get(jsonURL);
+      const pages: TPage[] = response.data.page;
 
-      const pidType = page.pid.slice(0, 2) as typeof pageType;
-      if (pidType !== pageType) continue;
+      for (let i = 0; i < pages.length; i++) {
+        const page = pages[i]!;
 
-      if (page.src) {
-        const url = new URL(page.src);
-        const sig = url.searchParams.get("sig")!;
-        const cleanImageLink = pageSrcURL(page.pid, sig);
-        pageLinks[page.pid] = cleanImageLink;
+        const pidType = page.pid.slice(0, 2) as typeof pageType;
+        if (pidType !== pageType) continue;
 
-        // search for pid number in availablePages and remove it
-        const pidNumber = parseInt(page.pid.replace(pageType, ""));
-        const index = availablePages.indexOf(pidNumber);
-        if (index > -1) availablePages.splice(index, 1);
-        previousAvailablePagesLength = availablePages.length;
+        if (page.src) {
+          const url = new URL(page.src);
+          const sig = url.searchParams.get("sig")!;
+          const cleanImageLink = pageSrcURL(page.pid, sig);
+          pageLinks[page.pid] = cleanImageLink;
+
+          // search for pid number in availablePages and remove it
+          const pidNumber = parseInt(page.pid.replace(pageType, ""));
+          const index = availablePages.indexOf(pidNumber);
+          if (index > -1) availablePages.splice(index, 1);
+          previousAvailablePagesLength = availablePages.length;
+        }
       }
     }
+    return pageLinks;
   }
+  const pageLinks = await getPageLinks();
 
   return { pageLinks, failedPages: availablePages };
 }
