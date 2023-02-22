@@ -20,53 +20,40 @@ export async function getPageSources(input: TFetchAvailPagesInput) {
   const pageSrcURL = (pid: string, sig: string) =>
     `https://books.google.${tld}/books/publisher/content?id=${bookId}&pg=${pid}&sig=${sig}${widthParam}&img=1&zoom=3`;
 
-  const availablePages: number[] = [];
-  for (let i = 1; i <= totalTypePages; i++)
-    if (!missingTypePages.includes(i)) availablePages.push(i);
+  const getJsonURL = (page: number) =>
+    `https://books.google.${tld}/books?jscmd=click3&id=${bookId}&pg=${pageType}${page}`;
 
-  const pageLinks: Record<string, string> = {};
+  async function getPageLinks() {
+    const failedPages: number[] = [];
+    const availablePages: number[] = [];
+    for (let i = 1; i <= totalTypePages; i++)
+      if (!missingTypePages.includes(i)) availablePages.push(i);
 
-  let previousAvailablePagesLength = availablePages.length;
-  let fetchRepeatCount = 0;
-  let tryIndex = 0; // TODO: randomize tryIndex instead of 0
-  let loopCount = 0;
-  while (availablePages.length !== 0) {
-    loopCount++;
-    console.log("loop count " + loopCount, availablePages);
-    if (tryIndex >= availablePages.length) tryIndex = 0;
+    const pageLinks: Record<string, string> = {};
 
-    if (previousAvailablePagesLength === availablePages.length) {
-      fetchRepeatCount++;
-      if (fetchRepeatCount > 5) {
-        console.warn("fetchRepeatCount > 5");
-        break;
-      }
-    } else fetchRepeatCount = 0;
+    for (let i = 0; i < availablePages.length; i++) {
+      console.log("loop count" + i, availablePages[i], availablePages);
+      const jsonURL = getJsonURL(availablePages[i]!);
+      const response = await axios.get(jsonURL);
+      const pages: TPage[] = response.data.page;
 
-    const jsonURL = `https://books.google.${tld}/books?jscmd=click3&id=${bookId}&pg=${pageType}${availablePages[tryIndex]}`;
-    const response = await axios.get(jsonURL);
-    const pages: TPage[] = response.data.page;
-
-    for (let i = 0; i < pages.length; i++) {
-      const page = pages[i]!;
-
-      const pidType = page.pid.slice(0, 2) as typeof pageType;
-      if (pidType !== pageType) continue;
+      // get page object with pid that matched
+      const page = pages.find((page) => page.pid === pageType + i);
+      if (!page) continue;
 
       if (page.src) {
         const url = new URL(page.src);
         const sig = url.searchParams.get("sig")!;
         const cleanImageLink = pageSrcURL(page.pid, sig);
         pageLinks[page.pid] = cleanImageLink;
+      } else failedPages.push(availablePages[i]!);
 
-        // search for pid number in availablePages and remove it
-        const pidNumber = parseInt(page.pid.replace(pageType, ""));
-        const index = availablePages.indexOf(pidNumber);
-        if (index > -1) availablePages.splice(index, 1);
-        previousAvailablePagesLength = availablePages.length;
-      }
+      console.log("pageLinks length", Object.keys(pageLinks).length);
+      console.log("failedPages length", failedPages.length);
     }
+    return { pageLinks, failedPages };
   }
+  const { pageLinks, failedPages } = await getPageLinks();
 
-  return { pageLinks, failedPages: availablePages };
+  return { pageLinks, failedPages };
 }
