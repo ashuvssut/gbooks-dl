@@ -37,8 +37,8 @@ export async function getPageSources(input: TFetchAvailPagesInput) {
 
     if (previousAvailablePagesLength === availablePages.length) {
       fetchRepeatCount++;
-      if (fetchRepeatCount > 2) {
-        console.warn("fetchRepeatCount > 2");
+      if (fetchRepeatCount > 5) {
+        console.warn("fetchRepeatCount > 5");
         break;
       }
     } else fetchRepeatCount = 0;
@@ -64,7 +64,7 @@ export async function getPageSources(input: TFetchAvailPagesInput) {
         const index = availablePages.indexOf(pidNumber);
         if (index > -1) availablePages.splice(index, 1);
         previousAvailablePagesLength = availablePages.length;
-      } else break;
+      }
     }
   }
 

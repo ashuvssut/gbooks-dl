@@ -1,6 +1,5 @@
 import { useAtom } from "jotai";
-import { FC, useEffect } from "react";
-import { FormEvent, useRef, useState } from "react";
+import { FC, useEffect, FormEvent, useState } from "react";
 import { api } from "../../../utils/api";
 import { bookIdAtom, bookSummaryAtom } from "../store";
 import SearchIcon from "@mui/icons-material/Search";
